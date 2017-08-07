@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+
+    <title>Bot</title>
+    <script>
+        $(document).ready(function () {
+
+            function call_bot() {
+                var question = $("input").val();
+                if (question.length > 0) {
+                    $(".chatBox").append("<p>" + question + "</p>");
+                    $.ajax({
+                        url: 'http://127.0.0.1:8000/web/ask',
+                        type: "POST",
+                        data: {csrfmiddlewaretoken: '{{ csrf_token }}', question: question},
+                        dataType: "json",
+                        success: function (data, status) {
+                            $.each(data, function (key, value) {
+                                $(".chatBox").append("<p>" + value + "</p>");
+                                $('.chatBox').animate({scrollTop: $('.chatBox').prop("scrollHeight")}, 500);
+                            });
+                        }
+                    });
+                    $("input").val("");
+                }
+                else {
+                    console.log("no question!")
+                }
+            }
+
+            $("button").click(function () {
+                call_bot()
+            });
+
+            $('input').keydown(function (e) {
+                if (e.keyCode == 13) {
+                    call_bot()
+                }
+            })
+        });
+    </script>
+</head>
+
+<div class="container" align="center">
+
+    <div class="col-md-7 bg-primary pre-scrollable chatBox" style="height: 300px;padding: 15px;margin: 15px;"></div>
+
+    <div class="col-md-7">
+        <input type="text" class="form-control" style="margin: 15px;" value="">
+        <button class="btn">Ask bot</button>
+    </div>
+
+    <div class="col-md-7" style="margin: 30px">
+        <p>Tell the bot that you have damaged the suit and he will help you with that.</p>
+    </div>
+</div>
+</body>
+</html>

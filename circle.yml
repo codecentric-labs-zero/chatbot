@@ -1,0 +1,48 @@
+machine:
+  python:
+    version: 3.5.0
+  environment:
+    SELENIUM_URI: http://127.0.0.1:4444/wd/hub
+
+test:
+  override:
+    - py.test
+
+general:
+  branches:
+    only:
+      - master
+      - develop
+      - /feature-.*/
+
+checkout:
+  post:
+    - ./merge-base-ff.sh
+
+deployment:
+  automerge:
+    branch: develop
+    commands:
+      - git config user.email "cc-labs-zero@codecentric.de"
+      - git config user.name "$CIRCLE_USERNAME"
+      - git fetch origin master:master
+      - git checkout master
+      - git merge $CIRCLE_SHA1 --no-edit
+      - git tag -a -m "Released by CircleCI build number $CIRCLE_BUILD_NUM ($CIRCLE_BUILD_URL)" rc-$CIRCLE_BUILD_NUM
+      - git push origin rc-$CIRCLE_BUILD_NUM
+      - git push origin master
+  staging:
+    branch: master
+    commands:
+      - heroku maintenance:on --app cclz-chatbot
+      - git push git@heroku.com:cclz-chatbot.git $CIRCLE_SHA1:refs/heads/master
+      - heroku pg:backups capture --app cclz-chatbot
+      - heroku run --app cclz-chatbot python manage.py migrate --no-input
+      - heroku maintenance:off --app cclz-chatbot
+
+dependencies:
+   post:
+        # Install Selenium.
+      - curl https://selenium-release.storage.googleapis.com/3.0/selenium-server-standalone-3.0.1.jar > selenium-server-standalone.jar
+      - 'java -jar -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver selenium-server-standalone.jar':
+              background: true
