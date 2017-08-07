@@ -18,7 +18,7 @@
                 if (question.length > 0) {
                     $(".chatBox").append("<p>" + question + "</p>");
                     $.ajax({
-                        url: 'http://127.0.0.1:8000/web/ask',
+                        url: 'https://cclz-chatbot.herokuapp.com/web/ask',
                         type: "POST",
                         data: {csrfmiddlewaretoken: '{{ csrf_token }}', question: question},
                         dataType: "json",

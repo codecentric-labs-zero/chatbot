@@ -14,6 +14,7 @@ import os
 import sys
 from configurations import Configuration, values
 
+
 class Common(Configuration):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     SECRET_KEY = values.SecretValue()
@@ -92,7 +93,6 @@ class Common(Configuration):
     db_from_env = dj_database_url.config(conn_max_age=500)
     DATABASES['default'].update(db_from_env)
 
-
     AUTH_PASSWORD_VALIDATORS = [
         {
             'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -132,7 +132,7 @@ class Common(Configuration):
 
 class Development(Common):
     DEBUG = True
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['cclz-chatbot.herokuapp.com']
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
@@ -150,8 +150,10 @@ class Development(Common):
         }
     }
 
+
 class Staging(Common):
     ALLOWED_HOSTS = ['cclz-chatbot.herokuapp.com']
 
+
 class Production(Staging):
-    ALLOWED_HOSTS = ['cclz-chatbot-prod.herokuapp.com']
+    ALLOWED_HOSTS = ['cclz-chatbot-prod.herokuapp.com', 'cclz-chatbot.herokuapp.com']
