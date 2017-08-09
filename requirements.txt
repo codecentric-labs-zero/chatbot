@@ -19,3 +19,5 @@ django-waffle==0.11.1
 newrelic==2.74.0.54
 selenium==3.0.1
 watson-developer-cloud==0.26.1
+messagebird==1.2.0
+requests==2.18.3
