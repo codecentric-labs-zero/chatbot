@@ -5,7 +5,7 @@ import requests
 import os
 import messagebird
 
-logger = logging.getLogger('testlogger')
+logger = logging.getLogger(__name__)
 
 
 def hello_world(request):
@@ -14,14 +14,16 @@ def hello_world(request):
 
 @csrf_exempt
 def receive_sms(request):
-    print('receive_sms')
-    logger.warning('in method receive_sms')
+    logger.info('in method receive_sms')
+
     if request.method == 'POST':
-        logger.warning(request.POST.get('id'))
-        logger.warning(request.POST.get('recipient'))
-        logger.warning(request.POST.get('originator'))
-        logger.warning(request.POST.get('body'))
-        logger.warning(request.POST.get('createdDatetime'))
+        logger.info('request type POST')
+        logger.info(request.POST.get('id'))
+        logger.info(request.POST.get('recipient'))
+        logger.info(request.POST.get('originator'))
+        logger.info(request.POST.get('body'))
+        logger.info(request.POST.get('createdDatetime'))
+
         user = request.POST.get('originator')
         text = request.POST.get('body')
         # forward q to bot
