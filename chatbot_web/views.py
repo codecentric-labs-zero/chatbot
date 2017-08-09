@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
 from watson_developer_cloud import ConversationV1
@@ -25,6 +26,7 @@ def ping(request):
     return HttpResponse("I am alive.", content_type="text/plain")
 
 
+@csrf_exempt
 def ask(request):
     if request.method == "POST":
         response = "missing parameters"
