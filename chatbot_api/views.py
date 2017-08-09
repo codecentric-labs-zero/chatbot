@@ -17,11 +17,11 @@ def receive_sms(request):
     print('receive_sms')
     logger.warning('in method receive_sms')
     if request.method == 'POST':
-        logger.info(request.POST.get('id'))
-        logger.info(request.POST.get('recipient'))
-        logger.info(request.POST.get('originator'))
-        logger.info(request.POST.get('body'))
-        logger.info(request.POST.get('createdDatetime'))
+        logger.warning(request.POST.get('id'))
+        logger.warning(request.POST.get('recipient'))
+        logger.warning(request.POST.get('originator'))
+        logger.warning(request.POST.get('body'))
+        logger.warning(request.POST.get('createdDatetime'))
         user = request.POST.get('originator')
         text = request.POST.get('body')
         # forward q to bot
@@ -31,7 +31,7 @@ def receive_sms(request):
         send_sms_to_user(user, answer)
         return HttpResponse(status=200)
     else:
-        logger.info('method GET')
+        logger.warning('method GET')
         return HttpResponse('GET req. not supported')
 
 

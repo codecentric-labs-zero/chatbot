@@ -3,8 +3,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from watson_developer_cloud import ConversationV1
 from django.http import JsonResponse
+import logging
 
 from os import environ
+
+logger = logging.getLogger('testlogger')
 
 conversation = ConversationV1(
     url=environ.get('BOT_URL'),
@@ -43,6 +46,7 @@ def ask(request):
                                               context=old_answer['context'])
                 request.session['old_answer'] = answer
                 response = answer['output']['text']
+                logger.warning(response)
         except Exception as e:
             print(e)
             pass
