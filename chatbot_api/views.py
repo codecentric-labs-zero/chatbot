@@ -1,8 +1,11 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
+import logging
 import requests
 import os
 import messagebird
+
+logger = logging.getLogger('testlogger')
 
 
 def hello_world(request):
@@ -11,12 +14,14 @@ def hello_world(request):
 
 @csrf_exempt
 def receive_sms(request):
+    print('receive_sms')
+    logger.warning('in method receive_sms')
     if request.method == 'POST':
-        print(request.POST.get('id'))
-        print(request.POST.get('recipient'))
-        print(request.POST.get('originator'))
-        print(request.POST.get('body'))
-        print(request.POST.get('createdDatetime'))
+        logger.info(request.POST.get('id'))
+        logger.info(request.POST.get('recipient'))
+        logger.info(request.POST.get('originator'))
+        logger.info(request.POST.get('body'))
+        logger.info(request.POST.get('createdDatetime'))
         user = request.POST.get('originator')
         text = request.POST.get('body')
         # forward q to bot
@@ -26,7 +31,7 @@ def receive_sms(request):
         send_sms_to_user(user, answer)
         return HttpResponse(status=200)
     else:
-        print('method GET')
+        logger.info('method GET')
         return HttpResponse('GET req. not supported')
 
 
@@ -35,22 +40,22 @@ def send_sms_to_user(user, answer):
     try:
         # Fetch the Balance object.
         balance = client.balance()
-        print('  amount  : %s' % balance.amount)
+        logger.info('  amount  : %s' % balance.amount)
 
         msg = client.message_create('12028525940', user, answer)
 
         # Print the object information.
-        print('\nThe following information was returned as a Message object:\n')
-        print('  id                : %s' % msg.id)
-        print('  href              : %s' % msg.href)
-        print('  direction         : %s' % msg.direction)
-        print('  type              : %s' % msg.type)
-        print('  originator        : %s' % msg.originator)
+        logger.info('\nThe following information was returned as a Message object:\n')
+        logger.info('  id                : %s' % msg.id)
+        logger.info('  href              : %s' % msg.href)
+        logger.info('  direction         : %s' % msg.direction)
+        logger.info('  type              : %s' % msg.type)
+        logger.info('  originator        : %s' % msg.originator)
 
     except messagebird.client.ErrorException as e:
-        print('\nAn error occured while requesting a Message object:\n')
+        logger.info('\nAn error occured while requesting a Message object:\n')
 
         for error in e.errors:
-            print('  code        : %d' % error.code)
-            print('  description : %s' % error.description)
-            print('  parameter   : %s\n' % error.parameter)
+            logger.info('  code        : %d' % error.code)
+            logger.info('  description : %s' % error.description)
+            logger.info('  parameter   : %s\n' % error.parameter)
